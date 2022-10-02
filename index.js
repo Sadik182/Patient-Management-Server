@@ -26,12 +26,30 @@ async function run() {
         const database = client.db('PatientDB');
         const dataCollection = database.collection('patient');
         console.log('Database is Connected');
+        const ObjectId = require('mongodb').ObjectId;
 
+        //GET API
+        app.get('/patient', async(req, res) => {
+            const query = {};
+            const cursor = dataCollection.find(query);
+           const patients = await cursor.toArray();
+           res.send(patients);
+        })
+
+        //POST API
         app.post('/patient', async(req, res) => {
             const newPatient = req.body;
             const result = await dataCollection.insertOne(newPatient);
             res.send(result);
         });
+
+        //DELETE API
+
+        app.delete('/patient/:id', async(req, res) => {
+            const id = req.params.id;
+            const query = {_id: ObjectId(id)}
+            const result = await dataCollection.deleteOne(query);
+        })
 
     } finally {
         // client.close();
