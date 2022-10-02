@@ -1,8 +1,8 @@
 const express = require("express");
-const app = express();
-const cors = require("cors");
-const port = process.env.PORT || 5000;
 const { MongoClient, ServerApiVersion } = require("mongodb");
+const cors = require("cors");
+const app = express();
+const port = process.env.PORT || 5000;
 
 //Midlewire
 
@@ -27,14 +27,17 @@ async function run() {
         const dataCollection = database.collection('patient');
         console.log('Database is Connected');
 
-    } catch (error) {
-        console.log(error);
-    }
-    finally {
-        client.close()
+        app.post('/patient', async(req, res) => {
+            const newPatient = req.body;
+            const result = await dataCollection.insertOne(newPatient);
+            res.send(result);
+        });
+
+    } finally {
+        // client.close();
     }
 }
-run();
+run().catch(console.dir);
 
 
 app.get("/", (req, res) => {
