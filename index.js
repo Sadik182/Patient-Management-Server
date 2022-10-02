@@ -49,6 +49,7 @@ async function run() {
             const id = req.params.id;
             const query = {_id: ObjectId(id)}
             const result = await dataCollection.deleteOne(query);
+            res.send(result);
         })
 
     } finally {
