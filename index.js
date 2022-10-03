@@ -34,6 +34,15 @@ async function run() {
             const cursor = dataCollection.find(query);
            const patients = await cursor.toArray();
            res.send(patients);
+        });
+
+        //Get Single Patient
+
+        app.get('/patient/:id', async(req, res) => {
+          const id = req.params.id;
+          const query = {_id: ObjectId(id)};
+          const result = await dataCollection.findOne(query);
+          res.send(result);
         })
 
         //POST API
@@ -50,6 +59,23 @@ async function run() {
             const query = {_id: ObjectId(id)}
             const result = await dataCollection.deleteOne(query);
             res.send(result);
+        });
+
+        // UPDATE API
+        app.put('/update/:id', async(req, res) => {
+          const id = req.params.id;
+          const updatedPatient = req.body;
+          const filter = {_id: ObjectId(id)};
+          const options = {upsert: true};
+          const updatedDoc = {
+            $set: {name: updatedPatient.name,
+             email: updatedPatient.email,
+             number: updatedPatient.number,
+             gender: updatedPatient.gender,
+            }
+          }
+          const result = await dataCollection.updateOne(filter, updatedDoc, options);
+          res.send(result);
         })
 
     } finally {
