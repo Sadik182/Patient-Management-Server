@@ -81,6 +81,19 @@ async function run() {
         //   res.send(result);
         // });
 
+        //Search API
+
+        app.get('/search/:key', async (req, res) => {
+          console.log(req.params.key);
+          let result = await dataCollection.find({
+            "$or": [
+              {"name": { $regex: req.params.key, $options: 'i' }}
+            ]
+          });
+         
+          res.send(result);
+        });
+
     } finally {
         // client.close();
     }
