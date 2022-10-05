@@ -62,21 +62,24 @@ async function run() {
         });
 
         // UPDATE API
-        app.put('/update/:id', async(req, res) => {
-          const id = req.params.id;
-          const updatedPatient = req.body;
-          const filter = {_id: ObjectId(id)};
-          const options = {upsert: true};
-          const updatedDoc = {
-            $set: {name: updatedPatient.name,
-             email: updatedPatient.email,
-             number: updatedPatient.number,
-             gender: updatedPatient.gender,
-            }
-          }
-          const result = await dataCollection.updateOne(filter, updatedDoc, options);
+
+        app.put("/patient/:id", async(req, res) => {
+          let result = await dataCollection.updateOne({_id: ObjectId(req.params.id)}, {$set: req.body}, {upsert: true});
           res.send(result);
         })
+
+
+        // app.put('/patient/:id', async(req, res) => {
+        //   // const id = req.params.id;
+        //   // const updatedPatient = req.body;
+        //   // const filter = {_id: ObjectId(id)};
+        //   // const options = {upsert: true};
+        //   // const updatedDoc = {
+        //   //   $set: {updatedPatient},
+        //   // };
+        //   let result = await dataCollection.updateOne({_id: req.params.id}, { $set: req.body}, {upsert: true});
+        //   res.send(result);
+        // });
 
     } finally {
         // client.close();
