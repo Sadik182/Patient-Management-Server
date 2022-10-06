@@ -3,6 +3,7 @@ const { MongoClient, ServerApiVersion } = require("mongodb");
 const cors = require("cors");
 const app = express();
 const port = process.env.PORT || 5000;
+const ObjectId = require('mongodb').ObjectId;
 
 //Midlewire
 
@@ -26,7 +27,6 @@ async function run() {
         const database = client.db('PatientDB');
         const dataCollection = database.collection('patient');
         console.log('Database is Connected');
-        const ObjectId = require('mongodb').ObjectId;
 
         //GET API
         app.get('/patient', async(req, res) => {
@@ -85,13 +85,12 @@ async function run() {
 
         app.get('/search/:key', async (req, res) => {
           console.log(req.params.key);
-          let result = await dataCollection.find({
+          let data = await dataCollection.find({
             "$or": [
-              {"name": { $regex: req.params.key, $options: 'i' }}
+              {name:{$regex: req.params.key}}
             ]
           });
-         
-          res.send(result);
+          res.send(data);
         });
 
     } finally {
