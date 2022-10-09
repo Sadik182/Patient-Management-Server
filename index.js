@@ -81,17 +81,33 @@ async function run() {
         //   res.send(result);
         // });
 
-        //Search API
 
-        app.get('/search/:key', async (req, res) => {
-          console.log(req.params.key);
-          let data = await dataCollection.find({
-            "$or": [
-              {name:{$regex: req.params.key}}
-            ]
-          });
-          res.send(data);
-        });
+
+        //Search API
+        app.get('/search/:key', async(req, res) => {
+          try {
+            let search = req.params.key;
+            let search_patient = await dataCollection.find({"name":{$regex: ".*"+search+".*",$options:'i'}}).toArray()
+            res.send(search_patient);
+          } catch (error) {
+            res.status(200).send({success:false, msg:error.message})
+          }
+        })
+
+        // app.get('/search/:key', async(req, res) => {
+        //   const searchKey = req.params.key
+        //   let test = await dataCollection.find({}).toArray()
+        // //   .toArray().then((r) => {
+        // //     console.log('From To Array', r);
+        // //   })
+        // //  let searchData = dataCollection.find({name:searchKey})
+        // //  .then((documents) => {
+        // //     console.log('From server', documents);
+        // //   })
+        // console.log('Test Data ',test);
+        // console.log('Hello world');
+        //   res.json('Hello world');
+        // });
 
     } finally {
         // client.close();
